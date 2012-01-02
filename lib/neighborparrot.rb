@@ -1,14 +1,10 @@
 class Neighborparrot
   require 'net/http'
   require 'uri'
-  require 'pp'
   NEIGHBOR_PROTOCOL = "http"
   NEIGHBOR_HOST = "localhost"
   NEIGHBOR_PORT = 9000
   POST_URL = URI.parse("#{NEIGHBOR_PROTOCOL}://#{NEIGHBOR_HOST}:#{NEIGHBOR_PORT}/post")
-
-  # EVENTS_URL = 'http://neighborparrot.net/open'
-  # POST_URL = 'http://neighborparrot.net/post'
 
   # Create a new instance of the client
   # @param [String] key: The key assigned to your account
@@ -70,48 +66,51 @@ class Neighborparrot
     @current_thread = nil
   end
 
-  # To be extended.
-  # Callen when a message is received
-  def on_message(message)
-    puts "received: #{message}."
+  # Define a block called on message received
+  # The received message is passed to the block as a var
+  def on_message(&block)
+    @on_message_blk = block
   end
 
-  def on_error(error=nil)
-    puts "on error #{error}"
+  # Define a block called on error
+  # An optional param with the error should be pass if present
+  def on_error(&block)
+    @on_error_blk = block
   end
 
-  def on_close
-    puts "on close"
+  # Define a block called on connection closed
+  def on_close(&block)
+    @on_close_blk = block
   end
 
-  def on_connect
-    puts "connected"
+  # Define a block called on connect
+  def on_connect(&block)
+    @on_connect_blk = block
   end
 
-  def set_connection(connection)
-    @connection = connection
-    on_connect
-  end
-
+  # Open a persistent connection to the neighbor
+  #
   def open_connection(channel, options={})
     begin
       Net::HTTP.start(NEIGHBOR_HOST, NEIGHBOR_PORT) do |http|
         http.read_timeout = 9999999999999999 # TODO Fix this
         request = Net::HTTP::Get.new "/open?channel=#{channel}"
-        set_connection http
+        @connection = http
+        @on_connect_blk.call if @on_connect_blk
         http.request request do |response|
           response.read_body do |chunk|
             if chunk.start_with? "data:"
-              data = chunk[5..-3] # Remove data: and \n\n
-              on_message data
+              data = chunk[5..-3]
+              puts "debug ::#{data}::"
+              @on_message_blk.call(data) if @on_message_blk
             end
           end
         end
       end
     rescue
-      on_error $!
+      @on_error_blk.call($!) if @on_error_blk
       return
     end
-    on_close
+    @on_close_blk.call if @on_close_blk
   end
 end

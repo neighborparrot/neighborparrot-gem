@@ -55,17 +55,25 @@ describe "Neighborparrot" do
     end
 
     it "should open a connection with correct values" do
-      @parrot.should_receive(:on_connect)
+      connected = false
+      @parrot.on_connect do
+        connected = true
+      end
       @parrot.open('test')
       sleep(2)
+      connected.should be_true
     end
 
     it "should receive messages" do
+      received = nil
+      @parrot.on_message do |msg|
+        received = msg
+      end
       @parrot.open('test')
-      sleep(1)
-      @parrot.should_receive(:on_message)
+      sleep(2)
       @parrot.post('test', 'message')
       sleep(1)
+      received.should eq 'message'
     end
 
     it "should return false if already a connection active" do
