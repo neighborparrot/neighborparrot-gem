@@ -21,7 +21,7 @@ describe "Neighborparrot" do
 
     it "should send post request with valid parameters" do
       expec_params = { :key => @key, :channel => 'test', :data => 'test string' }
-      url =  URI.parse('http://localhost:9000/post')
+      url =  URI.parse('http://neighborparrot.net/post')
       Net::HTTP.should_receive(:post_form).with(url, expec_params)
       @parrot.post(expec_params[:channel], expec_params[:data])
     end

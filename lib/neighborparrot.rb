@@ -2,8 +2,8 @@ class Neighborparrot
   require 'net/http'
   require 'uri'
   NEIGHBOR_PROTOCOL = "http"
-  NEIGHBOR_HOST = "localhost"
-  NEIGHBOR_PORT = 9000
+  NEIGHBOR_HOST = "neighborparrot.net"
+  NEIGHBOR_PORT = 80
   POST_URL = URI.parse("#{NEIGHBOR_PROTOCOL}://#{NEIGHBOR_HOST}:#{NEIGHBOR_PORT}/post")
 
   # Create a new instance of the client
@@ -101,7 +101,6 @@ class Neighborparrot
           response.read_body do |chunk|
             if chunk.start_with? "data:"
               data = chunk[5..-3]
-              puts "debug ::#{data}::"
               @on_message_blk.call(data) if @on_message_blk
             end
           end
