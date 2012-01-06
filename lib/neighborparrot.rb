@@ -1,32 +1,31 @@
 class Neighborparrot
-  require 'net/http'
+  require 'net/https'
   require 'uri'
-  NEIGHBOR_PROTOCOL = "http"
-  NEIGHBOR_HOST = "neighborparrot.net"
-  NEIGHBOR_PORT = 80
-  POST_URL = URI.parse("#{NEIGHBOR_PROTOCOL}://#{NEIGHBOR_HOST}:#{NEIGHBOR_PORT}/post")
 
   # Create a new instance of the client
   # @param [String] key: The key assigned to your account
   # in neighborparrot.com site
-  def initialize(key)
+  def initialize(key, server_url=nil)
     raise "Invalid key" if key.nil? || key.length == 0
     @key = key
+    @server_url = server_url || 'https://neighborparrot.net'
   end
 
   # Post a message to a channel
   # Raise exception if channel is not setted
   # If empty data, refuse to send nothing
-  # Raise exception if error
   # @param [String] channel: The channel name
   # @param [String] string to send
+  # @return [Boolean] true if sended
   def post(channel, data)
     raise "Channel can't be nil" if channel.nil? || channel.length == 0
     return false if data.nil? || data.length == 0
-    params = { :key => @key, :channel => channel, :data => data }
-    res = Net::HTTP.post_form(POST_URL, params)
-    raise "Error when post to the neighborparrot: #{res.value}" unless res.nil? || res.is_a?(Net::HTTPSuccess)
-    return true
+    uri = URI(@server_url)
+    Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
+      req = Net::HTTP::Post.new(URI.escape("/post?channel=#{channel}&data=#{data}"))
+      response = http.request(req)
+      return true if response.body == "Ok"
+    end
   end
 
   # Open a persistent connection to the Neighbor in a new
@@ -92,9 +91,10 @@ class Neighborparrot
   #
   def open_connection(channel, options={})
     begin
-      Net::HTTP.start(NEIGHBOR_HOST, NEIGHBOR_PORT) do |http|
+      uri = URI(@server_url)
+      Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
         http.read_timeout = 9999999999999999 # TODO Fix this
-        request = Net::HTTP::Get.new "/open?channel=#{channel}"
+        request = Net::HTTP::Get.new URI.escape("/open?channel=#{channel}")
         @connection = http
         @on_connect_blk.call if @on_connect_blk
         http.request request do |response|

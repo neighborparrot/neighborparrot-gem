@@ -19,13 +19,6 @@ describe "Neighborparrot" do
       expect { Neighborparrot.new('') }.to raise_error
     end
 
-    it "should send post request with valid parameters" do
-      expec_params = { :key => @key, :channel => 'test', :data => 'test string' }
-      url =  URI.parse('http://neighborparrot.net/post')
-      Net::HTTP.should_receive(:post_form).with(url, expec_params)
-      @parrot.post(expec_params[:channel], expec_params[:data])
-    end
-
     it "should raise exception with nill channel" do
       expect { @parrot.post(nil, 'test string') }.to raise_error
     end
