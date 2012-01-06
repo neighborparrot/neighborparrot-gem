@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "neighborparrot"
-  s.version = "0.2.0"
+  s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Eloy Gomez"]
-  s.date = "2012-01-02"
+  s.date = "2012-01-06"
   s.description = "Send messages to the neighborparrot event source service"
   s.email = "eloy@indeos.es"
   s.extra_rdoc_files = [
@@ -26,8 +26,13 @@ Gem::Specification.new do |s|
     "Rakefile",
     "VERSION",
     "lib/neighborparrot.rb",
+    "lib/neighborparrot/esparrot.rb",
+    "lib/neighborparrot/post.rb",
+    "neighborparrot.gemspec",
+    "spec/esparrot_spec.rb",
     "spec/neighborparrot_spec.rb",
-    "spec/spec_helper.rb"
+    "spec/spec_helper.rb",
+    "spec/support/helpers.rb"
   ]
   s.homepage = "http://neighborparrot.com"
   s.licenses = ["MIT"]
