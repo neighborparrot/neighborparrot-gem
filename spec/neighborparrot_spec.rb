@@ -64,9 +64,10 @@ describe "Neighborparrot" do
       end
       @parrot.open('test')
       sleep(2)
-      @parrot.post('test', 'message')
+      text = Faker::Lorem.paragraph(30)
+      @parrot.post('test', text)
       sleep(1)
-      received.should eq 'message'
+      received.should eq text
     end
 
     it "should return false if already a connection active" do

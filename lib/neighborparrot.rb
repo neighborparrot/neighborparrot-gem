@@ -22,8 +22,9 @@ class Neighborparrot
     return false if data.nil? || data.length == 0
     uri = URI(@server_url)
     Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
-      req = Net::HTTP::Post.new(URI.escape("/post?channel=#{channel}&data=#{data}"))
-      response = http.request(req)
+      request = Net::HTTP::Post.new('/post')
+      request.set_form_data({ :channel => channel, :data => data})
+      response = http.request(request)
       return true if response.body == "Ok"
     end
   end
