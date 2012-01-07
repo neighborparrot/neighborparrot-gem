@@ -1,4 +1,4 @@
-# Post 'test' string to 'test_channel'
-def test_post
-  Neighborparrot.post('test_channel', 'test')
+# Send 'test' string to 'test_channel'
+def send_test
+  Neighborparrot.send(:channel => 'test_channel', :data => 'test')
 end

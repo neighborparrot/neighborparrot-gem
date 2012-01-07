@@ -9,33 +9,33 @@ describe "Neighborparrot" do
 
   describe "Neigborparrot#post" do
     it 'should return true if no errors' do
-      test_post.should be_true
+      send_test.should be_true
     end
 
     it "should rails exception without id" do
       Neighborparrot.configure({ :api_key => nil })
-      expect { test_post }.to raise_error
+      expect { send_test }.to raise_error
     end
 
     it "should rails exception  without key" do
     Neighborparrot.configure({:api_id => nil})
-      expect { test_post }.to raise_error
+      expect { send_test }.to raise_error
     end
 
     it "should raise exception with nill channel" do
-      expect { Neighborparrot.post(nil, 'test string') }.to raise_error
+      expect { Neighborparrot.send(:channel => nil, :data => 'test string') }.to raise_error
     end
 
     it "should raise exception with empty channel" do
-      expect { Neighborparrot.post('', 'test string') }.to raise_error
+      expect { Neighborparrot.send(:channel => '', :data => 'test string') }.to raise_error
     end
 
     it "should not send message with nil data" do
-      Neighborparrot.post('test-channel', nil).should be_false
+      Neighborparrot.send(:channel => 'test-channel', :data => nil).should be_false
     end
 
     it "should not send message with empty data" do
-      Neighborparrot.post('test-channel', '').should be_false
+      Neighborparrot.send(:channel => 'test-channel', :data => '').should be_false
     end
   end
 end
