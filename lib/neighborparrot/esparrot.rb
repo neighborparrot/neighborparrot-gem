@@ -1,5 +1,17 @@
 class ESParrot
-  include Neighborparrot
+
+  # Create a thread for the reactor and startit
+  def initialize
+    current = Thread.current
+    @reactor_thread = Thread.new { EM.run { current.wakeup } }
+  end
+
+
+  def reactor_loop
+    EM.periodic_timer 2 do
+      puts "Dentro"
+    end
+  end
 
   # Open a persistent connection to the Neighbor in a new
   # thread and return true if all works  unless :foreground

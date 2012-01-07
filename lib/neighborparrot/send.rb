@@ -1,30 +1,36 @@
+require 'pp'
 module Neighborparrot
 
-  # Post a message to a channel
-  # Raise exception if channel is not setted
-  # If empty data, refuse to send nothing
-  # @param [Hash] params
-  # * :api_id => Your api ID in neighborparrot.com
-  # * :api_key => Your api key
-  # * :server => Server to connect (Only for development)
-  # * :channel => The channel name
-  # * :data => Your payload
-  # @return [Boolean] true if sended
-  def self.send(params={})
-    params = self.configuration.merge params
-    self.check_params params
-    return false if params[:data].nil? || params[:data].length == 0
-
-    uri = URI(params[:server])
-    Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
-      request = Net::HTTP::Post.new('/send')
-      request.set_form_data(params)
-      response = http.request(request)
-      return true if response.body == "Ok"
+  # Send the message to the broker
+  def send_to_broker(params={})
+    params = Neighborparrot.configuration.merge params
+    return unless check_params params
+    return if params[:data].nil? || params[:data].length == 0
+    return if dummy_connections?
+    url = "#{params[:server]}/send"
+    http = EventMachine::HttpRequest.new(url).post :body => params
+    http.errback{ |msg| trigger_on_error msg }
+    http.callback do
+      if http.response_header.status == 200
+        trigger_on_success http.response, params
+      else
+        trigger_on_error http.response
+      end
     end
   end
 
-  def post(channel, data, params={})
-    Neighborparrot.post(channel, data, params)
+  # Static helper
+  def self.send(params={})
+    parrot = Neighborparrot::Reactor.new
+    parrot.on_error do |error|
+      error
+      parrot.stop
+    end
+
+    parrot.on_success do |resp|
+      puts "Receive: #{resp}"
+      parrot.stop
+    end
+    parrot.send :channel => 'test', :data => 'test'
   end
 end
