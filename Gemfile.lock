@@ -3,6 +3,9 @@ GEM
   specs:
     addressable (2.2.6)
     diff-lcs (1.1.3)
+    em-eventsource (0.1.5)
+      em-http-request (~> 1.0.0)
+      eventmachine (~> 1.0.0.beta3)
     em-http-request (1.0.0)
       addressable (>= 2.2.3)
       em-socksify
@@ -36,6 +39,7 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 1.0.0)
+  em-eventsource
   em-http-request
   eventmachine
   faker

@@ -2,6 +2,7 @@ source "http://rubygems.org"
 
 gem 'eventmachine'
 gem 'em-http-request'
+gem 'em-eventsource'
 
 group :development do
   gem "rspec", "~> 2.3.0"

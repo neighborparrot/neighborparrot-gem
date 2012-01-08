@@ -1,3 +1,0 @@
-module Neighborparrot
-
-end

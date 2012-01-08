@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe "Neighborparrot::ESParrot" do
   before :all do
@@ -9,12 +9,13 @@ describe "Neighborparrot::ESParrot" do
   end
 
   before :each do
-    @parrot = ESParrot.new
+    @parrot = Neighborparrot::Reactor.new
+    @parrot.on_error { |e| raise e }
   end
 
   describe "Neighborparrot::ESParrot#open" do
     after :each do
-      @parrot.close
+      @parrot.stop
     end
 
     it "should open a connection with correct values" do
@@ -23,7 +24,7 @@ describe "Neighborparrot::ESParrot" do
         connected = true
       end
       @parrot.open(:channel => @channel)
-      sleep(2)
+      sleep(5)
       connected.should be_true
     end
 
@@ -35,8 +36,8 @@ describe "Neighborparrot::ESParrot" do
       @parrot.open(:channel => @channel)
       sleep(2)
       text = Faker::Lorem.paragraph(30)
-      Neighborparrot.send(:channel => 'test', :data => text)
-      sleep(1)
+      @parrot.send(:channel => 'test', :data => text)
+      sleep(2)
       received.should eq text
     end
 
@@ -51,7 +52,8 @@ describe "Neighborparrot::ESParrot" do
     it "should close a connection" do
       @parrot.open(:channel => @channel)
       sleep(2)
-      @parrot.close()
+      @parrot.stop
+      sleep(1)
       @parrot.connected?.should be_false
     end
   end

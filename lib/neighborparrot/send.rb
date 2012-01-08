@@ -21,16 +21,18 @@ module Neighborparrot
 
   # Static helper
   def self.send(params={})
-    parrot = Neighborparrot::Reactor.new
-    parrot.on_error do |error|
-      error
-      parrot.stop
+    EM.run do
+      parrot = Neighborparrot::Reactor.new
+      parrot.on_error do |error|
+        puts "Error: #{error}"
+        parrot.stop
+      end
+      parrot.on_success do |resp|
+        puts "Receive: #{resp}"
+        parrot.stop
+      end
+      parrot.send :channel => 'test', :data => 'test'
     end
-
-    parrot.on_success do |resp|
-      puts "Receive: #{resp}"
-      parrot.stop
-    end
-    parrot.send :channel => 'test', :data => 'test'
   end
+
 end
