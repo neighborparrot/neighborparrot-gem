@@ -2,14 +2,56 @@ require 'eventmachine'
 require 'em-http'
 
 module Neighborparrot
+  @@static_reactor = nil
+  # Static a module reactor and keeping running and waiting
+  def self.reactor_start
+    if @@static_reactor.nil?
+      return @@static_reactor = Reactor.new
+    end
+    @@static_reactor.start
+  end
+
+  # Stop the module reactor
+  def self.reactor_stop
+    return unless @@static_reactor
+    @@static_reactor.stop
+  end
+
+  # @return true if module reactor running
+  def self.reactor_running?
+    @@static_reactor && @@static_reactor.running?
+  end
+
+
+  # Reactor class
+  #=====================================
   class Reactor
     include Neighborparrot
 
-    # Start the reactor in a new thead and prepare
+  # Start the reactor in a new thead and prepare
     def initialize
       reactor_start
+      define_event_helpers
+    end
+
+    # generate events helpers for instances
+    # This define tho methods:
+    # on_event(&block):  Setup a block for the event
+    # trigger_event(*args): Trigger the event
+    def define_event_helpers
+      @event_block = {}
+      EVENTS.each do |event|
+        clazz = class << self; self; end
+        clazz.send :define_method, "on_#{event}" do |&block|
+          @event_block[event] = block
+        end
+        clazz.send :define_method, "trigger_#{event}" do |*args|
+          @event_block[event].call *args if @event_block[event]
+        end
+      end
     end
   end
+
 
   # Start the reactor if not running
   def start
@@ -20,13 +62,12 @@ module Neighborparrot
   def stop
     EM.schedule { EM.stop }
   end
-
+  # @return true if reactor running
   def running?
     EM.reactor_running?
   end
 
   # Send a message to a channel
-  # Raise exception if channel is not setted
   # If empty data, refuse to send nothing
   # @param [Hash] params
   # * :api_id => Your api ID in neighborparrot.com

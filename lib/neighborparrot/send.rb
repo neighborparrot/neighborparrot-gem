@@ -9,18 +9,26 @@ module Neighborparrot
     return if dummy_connections?
     url = "#{params[:server]}/send"
     http = EventMachine::HttpRequest.new(url).post :body => params
-    http.errback{ |msg| trigger_on_error msg }
+    http.errback{ |msg| trigger_error msg }
     http.callback do
       if http.response_header.status == 200
-        trigger_on_success http.response, params
+        trigger_success http.response, params
       else
-        trigger_on_error http.response
+        trigger_error http.response
       end
     end
   end
 
-  # Static helper
+  # Send the message to the broker.
+  # Create a new reactor and run the request inside
+  # Any output is printed in the standard output.
+  # If you start a module reactor in some point in your program
+  # the request is scheduled in this reactor and return
+  # the control to your program. Module callbacks are used in this case.
   def self.send(params={})
+    if @@static_reactor && @@static_reactor.running?
+      @@static_reactor.send params
+    end
     EM.run do
       parrot = Neighborparrot::Reactor.new
       parrot.on_error do |error|
@@ -28,10 +36,10 @@ module Neighborparrot
         parrot.stop
       end
       parrot.on_success do |resp|
-        puts "Receive: #{resp}"
+        puts "=> #{resp}"
         parrot.stop
       end
-      parrot.send :channel => 'test', :data => 'test'
+      parrot.send params
     end
   end
 

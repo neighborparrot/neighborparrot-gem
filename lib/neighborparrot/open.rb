@@ -25,14 +25,14 @@ module Neighborparrot
     @source = EM::EventSource.new(url, :channel => channel )
     @source.inactivity_timeout = 120
     @source.message do |message|
-     EM.next_tick { trigger_on_message message }
+     EM.next_tick { trigger_message message }
     end
     @source.error do |error|
-      EM.next_tick { trigger_on_error error }
+      EM.next_tick { trigger_error error }
     end
 
     @source.open do
-      EM.next_tick { trigger_on_connect }
+      EM.next_tick { trigger_connect }
     end
 
     @source.start

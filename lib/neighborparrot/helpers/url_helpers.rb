@@ -19,8 +19,8 @@ module ActionView
 
       # Return the js api target
       def parrot_js
-        return NEIGHBORPARROT_JS_API unless Neighborparrot.dummy_connections?
-        return NEIGHBORPARROT_JS_DUMMY_API
+        return NEIGHBORPARROT_JS_API #unless Neighborparrot.dummy_connections?
+#        return NEIGHBORPARROT_JS_DUMMY_API
       end
     end
   end

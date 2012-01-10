@@ -24,7 +24,7 @@ describe "Neighborparrot::ESParrot" do
         connected = true
       end
       @parrot.open(:channel => @channel)
-      sleep(5)
+      sleep 1
       connected.should be_true
     end
 
@@ -34,16 +34,15 @@ describe "Neighborparrot::ESParrot" do
         received = msg
       end
       @parrot.open(:channel => @channel)
-      sleep(2)
+
       text = Faker::Lorem.paragraph(30)
       @parrot.send(:channel => 'test', :data => text)
-      sleep(2)
+      sleep 1
       received.should eq text
     end
 
     it "should return false if already a connection active" do
       @parrot.open(:channel => @channel)
-      sleep(2)
       @parrot.open(:channel => 'other test').should be_false
     end
   end
@@ -51,9 +50,7 @@ describe "Neighborparrot::ESParrot" do
   describe "Neighborparrot::ESParrot#close" do
     it "should close a connection" do
       @parrot.open(:channel => @channel)
-      sleep(2)
       @parrot.stop
-      sleep(1)
       @parrot.connected?.should be_false
     end
   end
@@ -66,7 +63,7 @@ describe "Neighborparrot::ESParrot" do
 
     it "should be true when connected" do
       @parrot.open(:channel => @channel)
-      sleep(2)
+      sleep 2
       @parrot.connected?.should be_true
       @parrot.close
     end
