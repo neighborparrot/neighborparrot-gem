@@ -2,24 +2,24 @@ require 'eventmachine'
 require 'em-http'
 
 module Neighborparrot
-  @@static_reactor = nil
+  @@class_reactor = nil
   # Static a module reactor and keeping running and waiting
   def self.reactor_start
-    if @@static_reactor.nil?
-      return @@static_reactor = Reactor.new
+    if @@class_reactor.nil?
+      return @@class_reactor = Reactor.new
     end
-    @@static_reactor.start
+    @@class_reactor.start
   end
 
   # Stop the module reactor
   def self.reactor_stop
-    return unless @@static_reactor
-    @@static_reactor.stop
+    return unless @@class_reactor
+    @@class_reactor.stop
   end
 
   # @return true if module reactor running
   def self.reactor_running?
-    @@static_reactor && @@static_reactor.running?
+    @@class_reactor && @@class_reactor.running?
   end
 
 
@@ -51,7 +51,6 @@ module Neighborparrot
       end
     end
   end
-
 
   # Start the reactor if not running
   def start
@@ -90,13 +89,10 @@ module Neighborparrot
   # Create a thread for the reactor and startit
   def reactor_start
     if EM.reactor_running?
-      init_queue unless @out_queue
-      return
+      return init_queue unless @out_queue
     end
     @em_thread = Thread.new {
-      EM.run do
-        init_queue
-      end
+      EM.run { init_queue }
     }
   end
 

@@ -26,8 +26,8 @@ module Neighborparrot
   # the request is scheduled in this reactor and return
   # the control to your program. Module callbacks are used in this case.
   def self.send(params={})
-    if @@static_reactor && @@static_reactor.running?
-      @@static_reactor.send params
+    if self.reactor_running?
+      return @@class_reactor.send params
     end
     EM.run do
       parrot = Neighborparrot::Reactor.new
@@ -35,12 +35,11 @@ module Neighborparrot
         puts "Error: #{error}"
         parrot.stop
       end
-      parrot.on_success do |resp|
+        parrot.on_success do |resp|
         puts "=> #{resp}"
         parrot.stop
       end
       parrot.send params
     end
   end
-
 end
