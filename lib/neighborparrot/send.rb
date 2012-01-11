@@ -11,18 +11,22 @@ module Neighborparrot
     if self.reactor_running?
       return @@class_reactor.send params
     end
+    response = nil
+    error = false
     EM.run do
       parrot = Neighborparrot::Reactor.new
-      parrot.on_error do |error|
-        puts "Error: #{error}"
+      parrot.on_error do |msg|
+        error = msg
         parrot.stop
       end
         parrot.on_success do |resp|
-        puts "=> #{resp}"
+        response = resp
         parrot.stop
       end
       parrot.send params
     end
+    fail error if error
+    return response
   end
 
   private
