@@ -69,14 +69,11 @@ module Neighborparrot
   # Send a message to a channel
   # If empty data, refuse to send nothing
   # @param [Hash] params
-  # * :api_id => Your api ID in neighborparrot.com
-  # * :api_key => Your api key
-  # * :server => Server to connect (Only for development)
   # * :channel => The channel name
   # * :data => Your payload
   # @return [Boolean] true if sended
-  def send(params)
-    EM.schedule { @out_queue.push params }
+  def send(request)
+    EM.schedule { @out_queue.push request }
   end
 
 

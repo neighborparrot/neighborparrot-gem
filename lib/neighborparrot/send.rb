@@ -7,7 +7,7 @@ module Neighborparrot
   # If you start a module reactor in some point in your program
   # the request is scheduled in this reactor and return
   # the control to your program. Module callbacks are used in this case.
-  def self.send(params={})
+  def self.send(request, params={})
     if self.reactor_running?
       return @@class_reactor.send params
     end
@@ -23,7 +23,8 @@ module Neighborparrot
         response = resp
         parrot.stop
       end
-      parrot.send params
+      # Skip reactor queues
+      parrot.send_to_broker request, params
     end
     fail error if error
     return response
@@ -31,11 +32,15 @@ module Neighborparrot
 
   private
   # Send the message to the broker
-  def send_to_broker(params={})
+  # This is the final step of a send request in the reactor process
+  def send_to_broker(request={}, params={})
     params = Neighborparrot.configuration.merge params
     return unless check_params params
     return if params[:data].nil? || params[:data].length == 0
     return if params[:dummy_connections]
+
+    signed_request = sign_send_request request, params
+
     url = "#{params[:server]}/send"
     http = EventMachine::HttpRequest.new(url).post :body => params
     http.errback{ |msg| trigger_error msg }

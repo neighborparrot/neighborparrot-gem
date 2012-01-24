@@ -38,7 +38,7 @@ module Neighborparrot
   end
 
 
-  # Chen mandatory parameters
+  # Check mandatory parameters
   # @param [Hash] parameters
   # @param [Symbol] action [:send/:open]
   def check_params(p, action=:send)
