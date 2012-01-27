@@ -42,10 +42,10 @@ module Neighborparrot
   # @param [Hash] parameters
   # @param [Symbol] action [:send/:open]
   def check_params(p, action=:send)
-    trigger_on_error "Channel can't be nil" if p[:channel].nil? || p[:channel].length == 0
-    trigger_on_error "ERROR# Neighborparrot: api_id can't be nil" if p[:api_id].nil? || p[:api_id].length == 0
+    trigger_error "Channel can't be nil" if p[:channel].nil? || p[:channel].length == 0
+    trigger_error "ERROR# Neighborparrot: api_id can't be nil" if p[:api_id].nil? || p[:api_id].length == 0
     if action == :send
-      trigger_on_error "ERROR# Neighborparrot: api_key can't be nil" if p[:api_key].nil? || p[:api_key].length == 0
+      trigger_error "ERROR# Neighborparrot: api_key can't be nil" if p[:api_key].nil? || p[:api_key].length == 0
     end
     true
   end
