@@ -68,12 +68,13 @@ module Neighborparrot
 
   # Send a message to a channel
   # If empty data, refuse to send nothing
-  # @param [Hash] params
+  # @request [Hash] params
   # * :channel => The channel name
   # * :data => Your payload
+  # @params optional parameters
   # @return [Boolean] true if sended
-  def send(request)
-    EM.schedule { @out_queue.push request }
+  def send(request, params={})
+    EM.schedule { @out_queue.push({ :request => request, :params => params }) }
   end
 
 
@@ -89,7 +90,12 @@ module Neighborparrot
       return init_queue unless @out_queue
     end
     @em_thread = Thread.new {
-      EM.run { init_queue }
+      EM.run  do
+        EM.error_handler{ |e|
+          puts "Error raised during event loop: #{e.message} , #{e}"
+        }
+        init_queue
+      end
     }
   end
 

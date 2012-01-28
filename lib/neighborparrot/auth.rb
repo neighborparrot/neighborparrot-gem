@@ -2,8 +2,6 @@ require 'hmac-sha2'
 require 'signature'
 
 module Neighborparrot
-
-
   def self.sign_connect_request(query, params={})
     sign_request('GET', '/open', query, params)
   end
