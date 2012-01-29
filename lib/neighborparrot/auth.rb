@@ -3,7 +3,8 @@ require 'signature'
 
 module Neighborparrot
   def self.sign_connect_request(query, params={})
-    sign_request('GET', '/open', query, params)
+    endpoint = query[:service] == 'es' ? '/open' : '/ws'
+    sign_request('GET', endpoint, query, params)
   end
 
   def self.sign_send_request(body, params={})

@@ -33,7 +33,6 @@ module Neighborparrot
   # Send the message to the broker
   # This is the final step of a send request in the reactor process
   def send_to_broker(options)
-    puts options
     params = Neighborparrot.configuration.merge options[:params]
     request = options[:request]
     # TODO: Refactor
