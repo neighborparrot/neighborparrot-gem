@@ -3,12 +3,15 @@ source "http://rubygems.org"
 gem 'eventmachine'
 gem 'em-http-request'
 gem 'em-eventsource'
+gem 'bson_ext'
+gem 'ruby-hmac'
+gem 'signature'
 
 group :development do
-  gem "rspec", "~> 2.3.0"
-  gem "bundler", "~> 1.0.0"
+  gem "rspec"
+  gem "bundler"
   gem "jeweler", "~> 1.6.4"
-  gem "rcov", ">= 0"
+  gem "simplecov"
 end
 
 

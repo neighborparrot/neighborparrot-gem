@@ -19,15 +19,16 @@ module Neighborparrot
     return unless check_params params, :post
     return if dummy_connections?
     uri = URI.parse(params[:server])
-    channel = params[:channel]
     url = "#{params[:server]}/open"
-
-    @source = EM::EventSource.new(url, :channel => channel )
+    request = {:channel => params[:channel], :socket_id => params[:socket_id]}
+    signed_request = Neighborparrot.sign_connect_request(request, params)
+    @source = EM::EventSource.new(url, signed_request)
     @source.inactivity_timeout = 120
     @source.message do |message|
      EM.next_tick { trigger_message message }
     end
     @source.error do |error|
+      puts "Error #{error}"
       EM.next_tick { trigger_error error }
     end
 
