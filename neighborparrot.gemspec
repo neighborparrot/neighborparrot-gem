@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "neighborparrot"
-  s.version = "0.3.3"
+  s.version = "0.3.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Eloy Gomez"]
-  s.date = "2012-01-11"
+  s.date = "2012-02-01"
   s.description = "Send messages to the neighborparrot event source service"
   s.email = "eloy@indeos.es"
   s.extra_rdoc_files = [
@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
     "Rakefile",
     "VERSION",
     "lib/neighborparrot.rb",
+    "lib/neighborparrot/auth.rb",
     "lib/neighborparrot/callbacks.rb",
     "lib/neighborparrot/config.rb",
     "lib/neighborparrot/helpers/url_helpers.rb",
@@ -42,7 +43,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://neighborparrot.com"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.10"
+  s.rubygems_version = "1.8.11"
   s.summary = "Ruby client for the Neighborparrot"
 
   if s.respond_to? :specification_version then
@@ -52,27 +53,36 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<eventmachine>, [">= 0"])
       s.add_runtime_dependency(%q<em-http-request>, [">= 0"])
       s.add_runtime_dependency(%q<em-eventsource>, [">= 0"])
-      s.add_development_dependency(%q<rspec>, ["~> 2.3.0"])
-      s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
+      s.add_runtime_dependency(%q<bson_ext>, [">= 0"])
+      s.add_runtime_dependency(%q<ruby-hmac>, [">= 0"])
+      s.add_runtime_dependency(%q<signature>, [">= 0"])
+      s.add_development_dependency(%q<rspec>, [">= 0"])
+      s.add_development_dependency(%q<bundler>, [">= 0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.6.4"])
-      s.add_development_dependency(%q<rcov>, [">= 0"])
+      s.add_development_dependency(%q<simplecov>, [">= 0"])
     else
       s.add_dependency(%q<eventmachine>, [">= 0"])
       s.add_dependency(%q<em-http-request>, [">= 0"])
       s.add_dependency(%q<em-eventsource>, [">= 0"])
-      s.add_dependency(%q<rspec>, ["~> 2.3.0"])
-      s.add_dependency(%q<bundler>, ["~> 1.0.0"])
+      s.add_dependency(%q<bson_ext>, [">= 0"])
+      s.add_dependency(%q<ruby-hmac>, [">= 0"])
+      s.add_dependency(%q<signature>, [">= 0"])
+      s.add_dependency(%q<rspec>, [">= 0"])
+      s.add_dependency(%q<bundler>, [">= 0"])
       s.add_dependency(%q<jeweler>, ["~> 1.6.4"])
-      s.add_dependency(%q<rcov>, [">= 0"])
+      s.add_dependency(%q<simplecov>, [">= 0"])
     end
   else
     s.add_dependency(%q<eventmachine>, [">= 0"])
     s.add_dependency(%q<em-http-request>, [">= 0"])
     s.add_dependency(%q<em-eventsource>, [">= 0"])
-    s.add_dependency(%q<rspec>, ["~> 2.3.0"])
-    s.add_dependency(%q<bundler>, ["~> 1.0.0"])
+    s.add_dependency(%q<bson_ext>, [">= 0"])
+    s.add_dependency(%q<ruby-hmac>, [">= 0"])
+    s.add_dependency(%q<signature>, [">= 0"])
+    s.add_dependency(%q<rspec>, [">= 0"])
+    s.add_dependency(%q<bundler>, [">= 0"])
     s.add_dependency(%q<jeweler>, ["~> 1.6.4"])
-    s.add_dependency(%q<rcov>, [">= 0"])
+    s.add_dependency(%q<simplecov>, [">= 0"])
   end
 end
 
