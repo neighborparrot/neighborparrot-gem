@@ -1,6 +1,6 @@
-= neighborparrot
-
-Description goes here.
+= Neighborparrot ruby client
+Ruby client for the NeighborParrot hosted broker service. You must create a free account in http://nbparrot.com before in order to get an api_id and api_key. This client allow you to send messages to WebSocket and EventSource channels and open EventSource connections.
+Can be used in sync and async way.
 
 == Contributing to neighborparrot
  
