@@ -20,11 +20,12 @@ module Neighborparrot
         parrot.stop
       end
         parrot.on_success do |resp|
+        Neighborparrot.trigger_success resp
         response = resp
         parrot.stop
       end
       # Skip reactor queues
-      parrot.send_to_broker request, params
+      parrot.send_to_broker(:request => request, :params => params)
     end
     fail error if error
     return response

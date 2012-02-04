@@ -14,7 +14,8 @@ module Neighborparrot
       @@module_event_block[event] = block
     end
     clazz.send :define_method, "trigger_#{event}" do |*args|
-      @@module_event_block[event].call *args
+      block = @@module_event_block[event]
+      block.call *args if block
     end
   end
 end

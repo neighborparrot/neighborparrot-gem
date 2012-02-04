@@ -14,13 +14,12 @@ module Neighborparrot
   # * :api_id => Your api ID in neighborparrot.com
   # * :api_key => Your api key
   # * :server => Server to connect (Only for development)
-  def open_connection(params)
+  def open_connection(request, params={})
     params = Neighborparrot.configuration.merge params
-    return unless check_params params, :post
+    return unless check_params request.merge(params), :post
     return if dummy_connections?
     uri = URI.parse(params[:server])
     url = "#{params[:server]}/open"
-    request = {:channel => params[:channel], :socket_id => params[:socket_id]}
     signed_request = Neighborparrot.sign_connect_request(request, params)
     @source = EM::EventSource.new(url, signed_request)
     @source.inactivity_timeout = 120
@@ -49,19 +48,23 @@ module Neighborparrot
   end
 
   # Static helper. Create a EM Reactor and open the connexion on it
-  def self.open(params={})
+  def self.open(request, params={}, &block)
+    EM.error_handler { |error| Neighborparrot.trigger_error error }
+
     EM.run do
+
       parrot = Neighborparrot::Reactor.new
+
       parrot.on_error do |error|
-        puts "Error: #{error}"
+        Neighborparrot.trigger_error error
         EM.stop
       end
       parrot.on_message do |message|
-        puts "Received: #{message}"
+        Neighborparrot.trigger_message message
       end
-      parrot.on_connect { puts "Connected" }
+      parrot.on_connect { Neighborparrot.trigger_connect }
 
-      parrot.open params
+      parrot.open request, params
     end
   end
 end

@@ -79,8 +79,8 @@ module Neighborparrot
 
 
   # Open a Event Source connection with the broker
-  def open(params)
-    EM.schedule { open_connection params }
+  def open(request, params={})
+    EM.schedule { open_connection request, params }
   end
 
   private
@@ -91,9 +91,7 @@ module Neighborparrot
     end
     @em_thread = Thread.new {
       EM.run  do
-        EM.error_handler{ |e|
-          puts "Error raised during event loop: #{e.message} , #{e}"
-        }
+        EM.error_handler{ |e| trigger_error e }
         init_queue
       end
     }
